@@ -3,11 +3,9 @@ version: '3.8'
 services:
   web:
     build: .
-    # ÖNCE MIGRATE YAP, SONRA SUNUCUYU BAŞLAT
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/app
+    # İçeride Django yine 8000'den yayın yapıyor, onu bozma
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
-      - "8000:8000"
-    environment:
-      - DEBUG=1
+      # SOL Taraf: Dışarıdan gireceğin port (8001)
+      # SAĞ Taraf: İçerideki port (8000)
+      - "8001:8000"
