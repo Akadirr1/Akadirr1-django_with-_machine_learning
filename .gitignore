@@ -36,8 +36,6 @@ Thumbs.db
 desktop.ini
 
 # ML Models (large files)
-api/ml_models/
-*.pkl
 *.h5
 *.joblib
 *.model
