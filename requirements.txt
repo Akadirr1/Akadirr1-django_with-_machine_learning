@@ -1,26 +1,30 @@
-asgiref==3.8.1
-attrs==23.2.0
+# Django 4.1.13 uyumlu paketler
 Django==4.1.13
-django-cors-headers==4.3.1
-django-scalar==0.1.4
-djangorestframework==3.15.1
-djangorestframework-simplejwt==5.3.1
-drf-spectacular==0.27.2
-hatchling==1.24.2
-inflection==0.5.1
-joblib==1.4.2
-jsonschema==4.22.0
-jsonschema-specifications==2023.12.1
-numpy==1.26.4
-packaging==24.0
-pathspec==0.12.1
-pluggy==1.5.0
-PyJWT==2.8.0
-PyYAML==6.0.1
-referencing==0.35.1
-rpds-py==0.18.1
-scikit-learn==1.5.0
-scipy==1.13.1
+asgiref==3.8.1
 sqlparse==0.5.0
-threadpoolctl==3.5.0
+
+# Django REST Framework
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+PyJWT==2.8.0
+
+# CORS
+django-cors-headers==4.3.1
+
+# API Docs - uyumlu versiyonlar
+drf-spectacular==0.28.0
+django-scalar==0.1.4
+inflection==0.5.1
 uritemplate==4.1.1
+PyYAML==6.0.1
+
+# JSON Schema
+jsonschema==4.22.0
+attrs==23.2.0
+
+# ML Paketleri
+numpy==1.26.4
+scipy==1.13.1
+scikit-learn==1.5.0
+joblib==1.4.2
+threadpoolctl==3.5.0
