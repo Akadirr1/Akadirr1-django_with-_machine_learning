@@ -2,20 +2,23 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Sistem paketlerini kur (Bu lazım, yoksa pip install sırasında gcc hatası alırsın)
+# 1. Sistem paketlerini kur (ML ve Düzenleme için)
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
+    nano \
     && rm -rf /var/lib/apt/lists/*
 
-# Dosyaları kopyala (requirements.txt içeri girsin ki sen kurabilesin)
+# 2. Gereksinim dosyasını kopyala ve kur
 COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 3. Proje dosyalarını kopyala
 COPY . .
 
-# --- BURASI ÖNEMLİ: Pip install'ı KAPATTIK ---
-RUN pip install -r requirements.txt
-
+# 4. Portu dışarı aç
 EXPOSE 8000
 
-# Konteyner kapanmasın diye sonsuz döngüde bekletiyoruz
-CMD ["tail", "-f", "/dev/null"]
+# 5. Migration yap ve sunucuyu başlat
+CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
