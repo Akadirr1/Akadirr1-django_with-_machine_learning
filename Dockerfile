@@ -1,4 +1,5 @@
 FROM python:3.11-slim
+
 WORKDIR /app
 
 # Sistem paketlerini kur
@@ -9,10 +10,15 @@ RUN apt-get update && apt-get install -y \
 
 # Dosyaları kopyala
 COPY requirements.txt .
+
+# --- DÜZELTME BURADA: Başındaki # işaretlerini kaldırdık ---
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Kodları kopyala
 COPY . .
 
-# DİKKAT: pip install komutunu YORUMA ALDIM (# koydum)
-# RUN pip install -r requirements.txt
+EXPOSE 8000
 
-# Şimdilik sunucu başlatmasın, sadece "uyumasın" yeter
-CMD ["tail", "-f", "/dev/null"]
+# Sunucuyu başlat (Development modunda)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
