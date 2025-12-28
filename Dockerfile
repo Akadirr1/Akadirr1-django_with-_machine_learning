@@ -11,9 +11,11 @@ ENV PYTHONUNBUFFERED 1
 # 4. İşletim sistemi bağımlılıklarını kur (ML kütüphaneleri bazen gcc vb. ister)
 RUN apt-get update && apt-get install -y \
     gcc \
+    g++ \
     libpq-dev \
+    libopenblas-dev \
+    gfortran \
     && rm -rf /var/lib/apt/lists/*
-
 # 5. Gereksinimleri kopyala ve kur
 COPY requirements.txt /app/
 RUN pip install --upgrade pip
