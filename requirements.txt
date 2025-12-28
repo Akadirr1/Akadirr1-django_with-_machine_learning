@@ -1,7 +1,7 @@
 asgiref==3.11.0
 attrs==25.4.0
-Django==6.0
-django-cors-headers==4.9.0
+Django==4.1.13
+django-cors-headers==4.3.1
 django-scalar==0.1.4
 djangorestframework==3.15.1
 djangorestframework-simplejwt==5.3.1
