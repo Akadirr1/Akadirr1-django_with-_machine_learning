@@ -2,22 +2,18 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Sistem kütüphanelerini kur (ML kütüphaneleri için şart)
+# Sistem paketlerini kur
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Requirements dosyasını kopyala ve kur
+# Dosyaları kopyala
 COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-# Kodları kopyala
 COPY . .
 
-# Portu aç
-EXPOSE 8000
+# DİKKAT: pip install komutunu YORUMA ALDIM (# koydum)
+# RUN pip install -r requirements.txt
 
-# DİREKT DEVELOPMENT SUNUCUSUNU BAŞLAT
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Şimdilik sunucu başlatmasın, sadece "uyumasın" yeter
+CMD ["tail", "-f", "/dev/null"]
