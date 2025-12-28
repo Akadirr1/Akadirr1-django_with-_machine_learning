@@ -1,0 +1,65 @@
+# Django
+db.sqlite3
+*.pyc
+__pycache__/
+*.log
+*.pot
+local_settings.py
+media/
+staticfiles/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+secrets.json
+
+# Virtual Environments
+.venv
+venv/
+env/
+ENV/
+virtualenv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ML Models (large files)
+api/ml_models/
+*.pkl
+*.h5
+*.joblib
+*.model
+*.weights
+
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
