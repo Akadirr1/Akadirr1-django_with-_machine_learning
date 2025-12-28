@@ -13,7 +13,7 @@ COPY requirements.txt .
 COPY . .
 
 # --- BURASI ÖNEMLİ: Pip install'ı KAPATTIK ---
-# RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 EXPOSE 8000
 
