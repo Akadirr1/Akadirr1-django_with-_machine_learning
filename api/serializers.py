@@ -1,20 +1,28 @@
 from rest_framework import serializers
 from .models import CustomUser
-
+from .models import IrisData
+from .models import Location
+from rest_framework import viewsets
 class HelloSerializer(serializers.Serializer):
     message = serializers.CharField(max_length=200)
 class ToplamaSerializers(serializers.Serializer):
     sayi1=serializers.IntegerField()
     sayi2=serializers.IntegerField()
 class IrisInputSerializer(serializers.Serializer):
-    MODEL_SECENEKLERI=(('knn','KNN (En Yakın Komşu)'),
+    MODEL_CHOICES=(('knn','KNN (En Yakın Komşu)'),
                        ('svm','SVM (Destek Vektör)'),
                        ('dt','Decision Tree(Karar ağacı)'))
-    model_type=serializers.ChoiceField(choices=MODEL_SECENEKLERI,default='knn')
+    model_type=serializers.ChoiceField(choices=MODEL_CHOICES,default='knn')
     sepal_length=serializers.FloatField()
     sepal_width=serializers.FloatField()
     petal_length=serializers.FloatField()
     petal_width=serializers.FloatField()
+class IrisDataSerializers(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model=IrisData
+        fields='__all__'
+    
 class RegisterSerializers(serializers.ModelSerializer):
 	
     password = serializers.CharField(write_only=True)
@@ -36,3 +44,7 @@ class RegisterSerializers(serializers.ModelSerializer):
             phone_number=validated_data.get('phone_number','')
 		)
         return user
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Location
+        fields='__all__'
