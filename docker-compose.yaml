@@ -8,4 +8,4 @@ services:
     ports:
       # SOL Taraf: Dışarıdan gireceğin port (8001)
       # SAĞ Taraf: İçerideki port (8000)
-      - "8001:8000"
+      - "8005:8000"
