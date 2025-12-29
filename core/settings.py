@@ -26,7 +26,11 @@ SECRET_KEY = 'django-insecure-%^yoev@q$_k$d8$k!6)fnv%7p3jy@sbg$q6fzhef&#b5d0po-f
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://den.koufrontend.com",
+    "https://dj.koufrontend.com", # Varsa diğer alan adın
+    "http://localhost:8005",
+]
 
 # Application definition
 
