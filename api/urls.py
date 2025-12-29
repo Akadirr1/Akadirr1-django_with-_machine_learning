@@ -34,6 +34,7 @@ web_urlpatterns = [
     path('lokasyon/listele/', views.location_listele, name='location_listele'),
     path('lokasyon/sil/<int:id>/', views.location_sil, name='location_sil'),
     path('tahmin-web/', views.tahmin_web, name='tahmin_web'),
+    path('ajax/tahmin/', views.ajax_tahmin, name='ajax_tahmin'),
 ]
 
 urlpatterns = api_urlpatterns

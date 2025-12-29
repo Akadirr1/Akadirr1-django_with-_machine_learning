@@ -38,6 +38,15 @@
         </div>
         
         <div class="form-group">
+            <label for="ml_model">ML Model Seçin:</label>
+            <select id="ml_model" name="ml_model" style="margin-bottom: 10px;">
+                <option value="knn">K-En Yakın Komşu (KNN)</option>
+                <option value="svm">Destek Vektör Makinesi (SVM)</option>
+                <option value="decision_tree">Karar Ağacı Sınıflandırıcı</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
             <label for="species">Tür:</label>
             <div style="display: flex; gap: 10px; align-items: center;">
                 <select id="species" name="species" required style="flex: 1;">
@@ -46,8 +55,9 @@
                     <option value="Iris-versicolor" {% if form.species.value == 'Iris-versicolor' %}selected{% endif %}>Iris Versicolor</option>
                     <option value="Iris-virginica" {% if form.species.value == 'Iris-virginica' %}selected{% endif %}>Iris Virginica</option>
                 </select>
-                <a href="{% url 'tahmin_web' %}" class="btn btn-predict">Tahmin Et</a>
+                <button type="button" id="tahmin-btn" class="btn btn-predict">Tahmin Et</button>
             </div>
+            <div id="tahmin-sonuc" style="margin-top: 10px;"></div>
         </div>
         
         <div class="form-group">
@@ -74,4 +84,58 @@
         <input type="button" value="Formu Temizle" onclick="this.form.reset()">
     </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('tahmin-btn').addEventListener('click', function() {
+    const sepal_length = document.getElementById('sepal_length').value;
+    const sepal_width = document.getElementById('sepal_width').value;
+    const petal_length = document.getElementById('petal_length').value;
+    const petal_width = document.getElementById('petal_width').value;
+    const ml_model = document.getElementById('ml_model').value;
+    const sonucDiv = document.getElementById('tahmin-sonuc');
+    
+    // Validasyon
+    if (!sepal_length || !sepal_width || !petal_length || !petal_width) {
+        sonucDiv.innerHTML = '<span class="message error">Lütfen tüm ölçüm alanlarını doldurun!</span>';
+        return;
+    }
+    
+    // Loading göster
+    sonucDiv.innerHTML = '<span style="color: #4a9eff;">Tahmin yapılıyor...</span>';
+    this.disabled = true;
+    
+    fetch('{% url "ajax_tahmin" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            sepal_length: parseFloat(sepal_length),
+            sepal_width: parseFloat(sepal_width),
+            petal_length: parseFloat(petal_length),
+            petal_width: parseFloat(petal_width),
+            ml_model: ml_model
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        this.disabled = false;
+        if (data.success) {
+            // Dropdown'dan türü seç
+            const speciesSelect = document.getElementById('species');
+            speciesSelect.value = data.prediction;
+            sonucDiv.innerHTML = '<span class="message success">✓ Tahmin: ' + data.prediction + '</span>';
+        } else {
+            sonucDiv.innerHTML = '<span class="message error">Hata: ' + data.error + '</span>';
+        }
+    })
+    .catch(error => {
+        this.disabled = false;
+        sonucDiv.innerHTML = '<span class="message error">Bağlantı hatası!</span>';
+        console.error('Error:', error);
+    });
+});
+</script>
 {% endblock %}

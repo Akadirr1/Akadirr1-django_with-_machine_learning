@@ -25,6 +25,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import json
 from .forms import UserRegistrationForm, IrisForm, LocationForm, TahminForm
 class HelloWorldView(APIView):
     """
@@ -162,6 +166,37 @@ def kayit(request):
             return render(request, 'kayit.html', {'form': form, 'error': 'Kayıt sırasında hata oluştu.'})
     
     return render(request, 'kayit.html', {'form': UserRegistrationForm()})
+
+
+@csrf_exempt
+@require_POST
+def ajax_tahmin(request):
+    """AJAX ile tahmin yapan endpoint"""
+    try:
+        data = json.loads(request.body)
+        ml_model = data.get('ml_model', 'knn')
+        sepal_length = float(data.get('sepal_length', 0))
+        sepal_width = float(data.get('sepal_width', 0))
+        petal_length = float(data.get('petal_length', 0))
+        petal_width = float(data.get('petal_width', 0))
+        
+        species_names = {
+            0: "Iris-setosa",
+            1: "Iris-versicolor", 
+            2: "Iris-virginica"
+        }
+        
+        model = LOADED_MODELS.get(ml_model)
+        if not model:
+            return JsonResponse({'error': 'Model bulunamadı'}, status=400)
+        
+        input_vector = np.array([[sepal_length, sepal_width, petal_length, petal_width]])
+        predict_result = model.predict(input_vector)[0]
+        prediction = species_names.get(predict_result, "Bilinmeyen")
+        
+        return JsonResponse({'success': True, 'prediction': prediction})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 @login_required(login_url='login')

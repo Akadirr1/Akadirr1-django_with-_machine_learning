@@ -37,7 +37,9 @@
 <div class="forms-container" id="welcome-container">
     <h2>Hoş Geldiniz!</h2>
     <p>Hoş geldiniz, {{ user.username }}!</p>
-    <a href="{% url 'logout' %}" class="btn logout-button">Çıkış Yap</a>
+    <div style="margin-top: 20px;">
+        <a href="{% url 'logout' %}" class="btn logout-button">Çıkış Yap</a>
+    </div>
 </div>
 {% endif %}
 
