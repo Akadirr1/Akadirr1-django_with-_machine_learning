@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Iris Sil - Iris Sınıflandırma Sistemi{% endblock %}
+
+{% block content %}
+<div class="forms-container delete-confirmation">
+    <h2>Iris Örneği Sil</h2>
+    
+    {% if not user.is_authenticated %}
+    <div class="message error">Kaydı görüntülemek için giriş yapmalısınız!</div>
+    {% elif not record %}
+    <div class="message error">Silinecek kayıt bulunamadı!</div>
+    {% else %}
+    <div class="delete-info">
+        <h3>Silmek istediğiniz Iris bilgileri:</h3>
+        <table class="info-table">
+            <tr>
+                <td><strong>ID:</strong></td>
+                <td>{{ record.id }}</td>
+            </tr>
+            <tr>
+                <td><strong>Çanak Uzunluğu:</strong></td>
+                <td>{{ record.sepal_length }} cm</td>
+            </tr>
+            <tr>
+                <td><strong>Çanak Genişliği:</strong></td>
+                <td>{{ record.sepal_width }} cm</td>
+            </tr>
+            <tr>
+                <td><strong>Taç Uzunluğu:</strong></td>
+                <td>{{ record.petal_length }} cm</td>
+            </tr>
+            <tr>
+                <td><strong>Taç Genişliği:</strong></td>
+                <td>{{ record.petal_width }} cm</td>
+            </tr>
+            <tr>
+                <td><strong>Tür:</strong></td>
+                <td>{{ record.species }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="warning-message">
+        <p>⚠️ Bu işlem geri alınamaz! Bu Iris örneğini silmek istediğinizden emin misiniz?</p>
+    </div>
+    
+    {% if error %}
+    <div class="message error">{{ error }}</div>
+    {% endif %}
+    
+    <form method="post" action="{% url 'iris_sil' record.id %}">
+        {% csrf_token %}
+        <input type="submit" value="Evet, Sil" class="btn-delete-confirm">
+        <input type="button" value="Hayır, İptal Et" onclick="location.href='{% url 'iris_listele' %}'" class="btn-cancel">
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

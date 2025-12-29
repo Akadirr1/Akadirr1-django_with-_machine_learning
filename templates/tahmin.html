@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}ML Tahmin - Iris Sınıflandırma Sistemi{% endblock %}
+
+{% block content %}
+<div class="forms-container">
+    <h2>Iris Türü Tahmini Yap</h2>
+    
+    <div class="ml-info">
+        <p>Iris türünü tahmin etmek için aşağıdaki ölçümleri girin ve bir makine öğrenmesi algoritması seçin. Sistem, seçtiğiniz modeli kullanarak Iris türünü tahmin edecektir.</p>
+    </div>
+    
+    <form method="post" action="{% url 'tahmin_web' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="ml_model">Makine Öğrenmesi Modeli Seçin:</label>
+            <select id="ml_model" name="ml_model" required>
+                <option value="">Model Seçiniz</option>
+                <option value="knn" {% if form.ml_model.value == 'knn' %}selected{% endif %}>K-En Yakın Komşu (KNN)</option>
+                <option value="svm" {% if form.ml_model.value == 'svm' %}selected{% endif %}>Destek Vektör Makinesi (SVM)</option>
+                <option value="decision_tree" {% if form.ml_model.value == 'decision_tree' %}selected{% endif %}>Karar Ağacı Sınıflandırıcı</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="sepal_length">Çanak Yaprağı Uzunluğu (cm):</label>
+            <input type="number" id="sepal_length" name="sepal_length" step="0.1" min="0" 
+                   placeholder="Örn: 5.1" required value="{{ form.sepal_length.value|default:'' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="sepal_width">Çanak Yaprağı Genişliği (cm):</label>
+            <input type="number" id="sepal_width" name="sepal_width" step="0.1" min="0" 
+                   placeholder="Örn: 3.5" required value="{{ form.sepal_width.value|default:'' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="petal_length">Taç Yaprağı Uzunluğu (cm):</label>
+            <input type="number" id="petal_length" name="petal_length" step="0.1" min="0" 
+                   placeholder="Örn: 1.4" required value="{{ form.petal_length.value|default:'' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="petal_width">Taç Yaprağı Genişliği (cm):</label>
+            <input type="number" id="petal_width" name="petal_width" step="0.1" min="0" 
+                   placeholder="Örn: 0.2" required value="{{ form.petal_width.value|default:'' }}">
+        </div>
+        
+        {% if error %}
+        <div class="message error">{{ error }}</div>
+        {% endif %}
+        
+        <input type="submit" value="Tahmin Yap">
+        <input type="button" value="Formu Temizle" onclick="this.form.reset()">
+    </form>
+    
+    {% if prediction %}
+    <!-- Tahmin Sonucu Gösterimi -->
+    <div class="prediction-result">
+        <h3>Tahmin Sonucu</h3>
+        <div class="result-box">
+            <p class="result-species">Tahmin Edilen Iris Türü: <span>{{ prediction }}</span></p>
+            <p class="result-model">(Kullanılan Model: {{ model_name }})</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

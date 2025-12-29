@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Lokasyon Listesi - Iris Sınıflandırma Sistemi{% endblock %}
+
+{% block header_text %}Lokasyon Yönetimi{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <h2>Tüm Lokasyonlar</h2>
+    
+    {% if not user.is_authenticated %}
+    <div class="message error">Lokasyonları görüntülemek için giriş yapmalısınız!</div>
+    {% elif locations %}
+    <div id="table-wrapper">
+        <table id="locations-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>İsim</th>
+                    <th>Şehir</th>
+                    <th>Ülke</th>
+                    <th>Yükseklik (m)</th>
+                    <th>Açıklama</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in locations %}
+                <tr>
+                    <td>{{ location.id }}</td>
+                    <td>{{ location.name|default:'-' }}</td>
+                    <td>{{ location.city|default:'-' }}</td>
+                    <td>{{ location.country|default:'-' }}</td>
+                    <td>{{ location.elevation|default:'-' }}</td>
+                    <td>{{ location.description|default:'-' }}</td>
+                    <td>
+                        <a href="{% url 'location_sil' location.id %}" class="btn-action btn-delete">Sil</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="message">
+        Henüz kayıtlı lokasyon bulunmuyor. <a href="{% url 'location_ekle' %}">Yeni lokasyon ekleyin</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

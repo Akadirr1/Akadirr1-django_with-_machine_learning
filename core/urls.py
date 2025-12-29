@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView
 from django_scalar.views import scalar_viewer
+from api.urls import web_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +26,5 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     # Scalar API Documentation
     path('api/docs/', scalar_viewer, name='scalar-docs'),
-]
+    # Web Template URL'leri (ana sayfa için)
+] + web_urlpatterns

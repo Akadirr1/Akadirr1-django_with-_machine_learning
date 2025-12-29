@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Iris Güncelle - Iris Sınıflandırma Sistemi{% endblock %}
+
+{% block content %}
+<div class="forms-container">
+    <h2>Iris Örneği Güncelle</h2>
+    
+    {% if not user.is_authenticated %}
+    <div class="message error">Kaydı görüntülemek için giriş yapmalısınız!</div>
+    {% elif not record %}
+    <div class="message error">Güncellenecek kayıt bulunamadı!</div>
+    {% else %}
+    <div class="info-box">
+        <p>Aşağıdaki formda mevcut Iris örneğinin bilgilerini güncelleyebilirsiniz. Değiştirmek istediğiniz alanları düzenleyin.</p>
+    </div>
+    
+    <form method="post" action="{% url 'iris_guncelle' record.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="iris_id">Iris ID:</label>
+            <input type="text" id="iris_id" name="iris_id" value="{{ record.id }}" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label for="sepal_length">Çanak Yaprağı Uzunluğu (cm):</label>
+            <input type="number" id="sepal_length" name="sepal_length" step="0.1" min="0" 
+                   required value="{{ record.sepal_length }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="sepal_width">Çanak Yaprağı Genişliği (cm):</label>
+            <input type="number" id="sepal_width" name="sepal_width" step="0.1" min="0" 
+                   required value="{{ record.sepal_width }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="petal_length">Taç Yaprağı Uzunluğu (cm):</label>
+            <input type="number" id="petal_length" name="petal_length" step="0.1" min="0" 
+                   required value="{{ record.petal_length }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="petal_width">Taç Yaprağı Genişliği (cm):</label>
+            <input type="number" id="petal_width" name="petal_width" step="0.1" min="0" 
+                   required value="{{ record.petal_width }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="species">Tür:</label>
+            <select id="species" name="species" required>
+                <option value="">Tür Seçiniz</option>
+                <option value="Iris-setosa" {% if record.species == 'Iris-setosa' %}selected{% endif %}>Iris Setosa</option>
+                <option value="Iris-versicolor" {% if record.species == 'Iris-versicolor' %}selected{% endif %}>Iris Versicolor</option>
+                <option value="Iris-virginica" {% if record.species == 'Iris-virginica' %}selected{% endif %}>Iris Virginica</option>
+            </select>
+        </div>
+        
+        {% if error %}
+        <div class="message error">{{ error }}</div>
+        {% endif %}
+        
+        {% if success %}
+        <div class="message success">{{ success }}</div>
+        {% endif %}
+        
+        <input type="submit" value="Güncelle">
+        <input type="button" value="İptal" onclick="location.href='{% url 'iris_listele' %}'">
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
