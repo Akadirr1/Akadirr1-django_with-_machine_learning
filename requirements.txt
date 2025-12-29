@@ -23,8 +23,8 @@ jsonschema==4.22.0
 attrs==23.2.0
 
 # ML Paketleri
-numpy==1.26.4
-scipy==1.13.1
-scikit-learn==1.5.0
+numpy>=2.1.0
+scipy>=1.14.0
+scikit-learn>=1.5.0
 joblib==1.4.2
 threadpoolctl==3.5.0

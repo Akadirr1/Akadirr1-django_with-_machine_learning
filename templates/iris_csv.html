@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}CSV İşlemleri - Iris Sınıflandırma Sistemi{% endblock %}
+
+{% block content %}
+<!-- CSV Export Bölümü -->
+<div class="forms-container">
+    <h2>📥 CSV Dışa Aktar</h2>
+    
+    <div class="info-box">
+        <p>Kayıtlarınızı CSV formatında indirerek yedeği alabilir veya başka programlarda kullanabilirsiniz.</p>
+        <ul style="margin-top: 10px; padding-left: 20px;">
+            <li>✓ Tüm Iris kayıtlarınız</li>
+            <li>✓ Excel ile uyumlu</li>
+            <li>✓ Anında indirme</li>
+        </ul>
+    </div>
+
+    <form action="/api/csv/export/" method="get">
+        <button type="submit" class="btn">
+            📊 CSV Dosyası İndir
+        </button>
+    </form>
+</div>
+
+<!-- CSV Import Bölümü -->
+<div class="forms-container">
+    <h2>📤 CSV İçe Aktar</h2>
+    
+    <div class="info-box">
+        <p>CSV dosyasından toplu Iris verileri yükleyebilirsiniz.</p>
+    </div>
+
+    <div class="info-box" style="background-color: rgba(23, 162, 184, 0.1); border-color: #17a2b8;">
+        <h3 style="color: #17a2b8; margin-top: 0;">📋 CSV Dosya Formatı:</h3>
+        <div style="background-color: #0f1a35; border-radius: 6px; padding: 15px; margin: 15px 0; overflow-x: auto; border: 1px solid #2d4a7c;">
+            <code style="color: #4a9eff; font-family: monospace; font-size: 0.9em; display: block; white-space: pre;">Sepal Length,Sepal Width,Petal Length,Petal Width,Species,Location ID
+5.1,3.5,1.4,0.2,Iris-setosa,1
+6.2,2.9,4.3,1.3,Iris-versicolor,2
+7.3,2.9,6.3,1.8,Iris-virginica,3</code>
+        </div>
+        <p style="color: #ffc107; font-weight: bold;">⚠️ İlk satır başlık satırıdır ve otomatik atlanır.</p>
+    </div>
+
+    <form action="/api/csv/import/" method="post" enctype="multipart/form-data" id="import-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="csv_file">CSV Dosyası Seçin:</label>
+            <div style="position: relative;">
+                <input type="file" name="csv_file" id="csv_file" accept=".csv" required 
+                       style="position: absolute; left: -9999px;">
+                <label for="csv_file" style="display: block; padding: 15px 20px; background-color: #2d4a7c; border: 2px dashed #4a9eff; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s ease;">
+                    <span id="file-name" style="color: #b8d4ff; font-weight: 500;">📁 Dosya Seç (.csv)</span>
+                </label>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn">
+            📤 Dosyayı Yükle
+        </button>
+    </form>
+</div>
+
+<!-- Bilgilendirme -->
+<div class="forms-container">
+    <h2>💡 Bilgilendirme</h2>
+    
+    <div class="info-box">
+        <ul style="padding-left: 20px; color: #b8d4ff;">
+            <li>CSV dosyası virgülle ayrılmış değerler içermelidir</li>
+            <li>Location ID opsiyoneldir (boş bırakılabilir)</li>
+            <li>Dosya UTF-8 kodlamalı olmalıdır</li>
+            <li>Maksimum dosya boyutu: 5MB</li>
+            <li>İçe aktarılan veriler mevcut kayıtlara eklenir</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('csv_file').addEventListener('change', function(e) {
+    var fileName = e.target.files[0] ? e.target.files[0].name : '📁 Dosya Seç (.csv)';
+    document.getElementById('file-name').textContent = fileName;
+});
+
+document.getElementById('import-form').addEventListener('submit', function(e) {
+    var fileInput = document.getElementById('csv_file');
+    if (!fileInput.files.length) {
+        e.preventDefault();
+        alert('Lütfen bir CSV dosyası seçin!');
+        return false;
+    }
+    
+    var file = fileInput.files[0];
+    if (!file.name.endsWith('.csv')) {
+        e.preventDefault();
+        alert('Lütfen sadece .csv uzantılı dosya yükleyin!');
+        return false;
+    }
+    
+    // 5MB limit
+    if (file.size > 5 * 1024 * 1024) {
+        e.preventDefault();
+        alert('Dosya boyutu 5MB\'dan küçük olmalıdır!');
+        return false;
+    }
+    
+    return true;
+});
+</script>
+{% endblock %}

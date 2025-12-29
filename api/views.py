@@ -19,7 +19,10 @@ import joblib
 import numpy as np
 from django.conf import settings
 from .ml_loader import LOADED_MODELS
-
+import csv
+from django.utils.encoding import smart_str
+from django.http import HttpResponse
+from rest_framework.authentication import SessionAuthentication
 # Django Template Views için import'lar
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
@@ -314,6 +317,12 @@ def location_sil(request, id):
 
 
 @login_required(login_url='login')
+def iris_csv(request):
+    """CSV Import/Export view"""
+    return render(request, 'iris_csv.html')
+
+
+@login_required(login_url='login')
 def tahmin_web(request):
     """ML Tahmin view (Web Arayüzü)"""
     prediction = None
@@ -365,3 +374,69 @@ def tahmin_web(request):
         'prediction': prediction,
         'model_name': model_name,
     })
+class IrisCSVExportView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="iris_verileri.csv"'
+        
+        writer = csv.writer(response)
+        writer.writerow(['Sepal Length', 'Sepal Width', 'Petal Length', 'Petal Width', 'Species', 'Location ID'])
+        
+        # Kullanıcıya ait verileri çekiyorum burda
+        records = IrisData.objects.filter(owner=request.user).values_list(
+            'sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species', 'location'
+        )
+        
+        for record in records:
+            writer.writerow(record)
+            
+        return response
+
+
+class IrisCSVImportView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        csv_file = request.FILES.get('csv_file')
+        
+        if not csv_file:
+            messages.error(request, 'Lütfen bir dosya seçin.')
+            return redirect('iris_listele')
+
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, 'Lütfen geçerli bir CSV dosyası yükleyin.')
+            return redirect('iris_listele')
+        
+        try:
+            #Dosyayı okuma kısmını burda yapıyorum
+            file_data = csv_file.read().decode("utf-8")
+            lines = file_data.split("\n")
+            
+            success_count = 0
+            
+            for line in lines[1:]:
+                if not line.strip(): continue #Boş satırları atladım
+                
+                fields = line.split(",")
+                if len(fields) >= 5:
+                    IrisData.objects.create(
+                        owner=request.user,
+                        sepal_length=float(fields[0]),
+                        sepal_width=float(fields[1]),
+                        petal_length=float(fields[2]),
+                        petal_width=float(fields[3]),
+                        species=fields[4].strip(),
+                        location_id=int(fields[5]) if len(fields) > 5 and fields[5].strip() else None
+                    )
+                    success_count += 1
+            
+            messages.success(request, f'{success_count} kayıt başarıyla yüklendi.')
+            
+        except Exception as e:
+            messages.error(request, f'Hata oluştu: {str(e)}')
+            
+        return redirect('iris_listele')

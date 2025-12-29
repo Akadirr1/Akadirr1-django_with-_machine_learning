@@ -18,6 +18,8 @@ api_urlpatterns = [
 	path('register/',views.RegisterView.as_view(),name='register'),    
 	path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('csv/export/', views.IrisCSVExportView.as_view(), name='export_iris_csv'),
+    path('csv/import/', views.IrisCSVImportView.as_view(), name='import_iris_csv'),
 ]
 
 # Web Template URL'leri
@@ -30,6 +32,7 @@ web_urlpatterns = [
     path('iris/listele/', views.iris_listele, name='iris_listele'),
     path('iris/guncelle/<int:id>/', views.iris_guncelle, name='iris_guncelle'),
     path('iris/sil/<int:id>/', views.iris_sil, name='iris_sil'),
+    path('iris/csv/', views.iris_csv, name='iris_csv'),
     path('lokasyon/ekle/', views.location_ekle, name='location_ekle'),
     path('lokasyon/listele/', views.location_listele, name='location_listele'),
     path('lokasyon/sil/<int:id>/', views.location_sil, name='location_sil'),
