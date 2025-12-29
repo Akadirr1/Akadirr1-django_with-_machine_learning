@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
-    "https://den.koufrontend.com",
+    "https://den.akadir.tech",
     "https://dj.koufrontend.com", # Varsa diğer alan adın
     "http://localhost:8005",
 ]
